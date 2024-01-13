@@ -1,0 +1,69 @@
+﻿<!-- ReservationList.razor -->
+@page "/reservations"
+@using Airbnb.Blazor.Interfaces;
+@using Airbnb.BlazorApp.Interfaces;
+@using Airbnb.BlazorApp.Services;
+@using Airbnb.Domain.Entities;
+@inject IReservationApiService ReservationApiService
+@inject NavigationManager NavigationManager
+
+@code {
+    private List<Reservation> reservations;
+    private int reservationsCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        reservations = await ReservationApiService.GetReservations();
+        reservationsCount = await ReservationApiService.GetReservationsCount();
+    }
+
+    private async Task EditReservation(Reservation reservation)
+    {
+        NavigationManager.NavigateTo($"/reservations/update/{reservation.reservation_id}");
+    }
+
+    private async Task DeleteReservation(int reservationId)
+    {
+        await ReservationApiService.DeleteReservation(reservationId);
+        await RefreshReservationList();
+    }
+
+    private async Task CreateReservation()
+    {
+        NavigationManager.NavigateTo("/reservations/create");
+    }
+
+    private async Task RefreshReservationList()
+    {
+        reservations = await ReservationApiService.GetReservations();
+        reservationsCount = await ReservationApiService.GetReservationsCount();
+    }
+}
+
+<h3>Reservation List</h3>
+
+<p>Total Reservations: @reservationsCount</p>
+
+<ul>
+    @if (reservations != null)
+    {
+        @foreach (var reservation in reservations)
+        {
+            <li>
+                <strong>Renter ID:</strong> @reservation.renter_id <br />
+                <strong>Reservation ID:</strong> @reservation.reservation_id <br />
+                <strong>Start Date:</strong> @reservation.start_date <br />
+                <strong>End Date:</strong> @reservation.end_date <br />
+                <strong>Room ID:</strong> @reservation.room_id <br />
+                <strong>Total:</strong> @reservation.total <br />
+
+                <button class="btn btn-sm btn-primary" @onclick="() => EditReservation(reservation)">Edit</button>
+                <button class="btn btn-sm btn-danger" @onclick="() => DeleteReservation(reservation.reservation_id)">Delete</button>
+            </li>
+
+        }
+
+    }
+</ul>
+
+<button class="btn btn-success" @onclick="CreateReservation">Create Reservation</button>

@@ -1,0 +1,66 @@
+﻿<!-- RenterUpdate.razor -->
+@page "/renters/update/{renterId:int}"
+@using Airbnb.Blazor.Interfaces;
+@using Airbnb.Domain.Entities
+@inject IRenterApiService RenterApiService
+@inject NavigationManager NavigationManager
+
+<h3>Edit Renter</h3>
+
+@if (renter == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <form>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="text" class="form-control" id="email" @bind="renter.email" />
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" @bind="renter.password" />
+        </div>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" @bind="renter.name" />
+        </div>
+        <div class="form-group">
+            <label for="created_at">Created At:</label>
+            <input type="text" class="form-control" id="created_at" @bind="renter.created_at" />
+        </div>
+        <div class="form-group">
+            <label for="phone_number">Phone Number:</label>
+            <input type="text" class="form-control" id="phone_number" @bind="renter.phone_number" />
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="text" class="form-control" id="description" @bind="renter.description" />
+        </div>
+        <div class="form-group">
+            <label for="email_verified_at">Email Verified At:</label>
+            <input type="text" class="form-control" id="email_verified_at" @bind="renter.email_verified_at" />
+        </div>
+
+        <button type="button" class="btn btn-primary" @onclick="UpdateRenter">Update</button>
+    </form>
+}
+
+@code {
+    [Parameter]
+    public int renterId { get; set; }
+
+    private Renter renter;
+
+    protected override async Task OnInitializedAsync()
+    {
+        renter = await RenterApiService.GetRenterById(renterId);
+    }
+
+    private async Task UpdateRenter()
+    {
+        await RenterApiService.UpdateRenter(renterId, renter);
+        NavigationManager.NavigateTo("/renters"); // Navigate back to the renter list page after updating
+    }
+}

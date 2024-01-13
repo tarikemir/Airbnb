@@ -1,0 +1,64 @@
+﻿@page "/admins/update/{adminId:int}"
+
+@using Airbnb.BlazorApp.Interfaces;
+@using Airbnb.BlazorApp.Services;
+@using Airbnb.Domain.Entities
+@using Microsoft.AspNetCore.Components;
+@inject IAdminApiService AdminApiService
+@inject NavigationManager NavigationManager
+
+@code {
+    [Parameter]
+    public int adminId { get; set; }
+
+    public Admin admin;
+
+    protected override async Task OnInitializedAsync()
+    {
+        admin = await AdminApiService.GetAdminById(adminId);
+    }
+
+    private async Task EditAdmin()
+    {
+        await AdminApiService.UpdateAdmin(adminId, admin);
+        NavigationManager.NavigateTo("/admins"); // Navigate back to the admin list page after updating
+    }
+}
+
+<h3>Edit Admin</h3>
+
+@if (admin == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <form>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" @bind="admin.name" />
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" @bind="admin.password" />
+        </div>
+        <div class="form-group">
+            <label for="phone_num">Phone Number:</label>
+            <input type="text" class="form-control" id="phone_num" @bind="admin.phone_num" />
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="text" class="form-control" id="description" @bind="admin.description" />
+        </div>
+        <div class="form-group">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" @bind="admin.email" />
+        </div>
+        <!-- Add other fields as needed -->
+
+        <button type="button" class="btn btn-primary" @onclick="EditAdmin">Update</button>
+    </form>
+
+}
+
+

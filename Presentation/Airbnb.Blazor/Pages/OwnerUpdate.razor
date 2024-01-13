@@ -1,0 +1,56 @@
+﻿<!-- OwnerUpdate.razor -->
+@page "/owners/update/{ownerId:int}"
+@using Airbnb.Blazor.Interfaces;
+@using Airbnb.Domain.Entities
+@inject IOwnerApiService OwnerApiService
+@inject NavigationManager NavigationManager
+
+<h3>Edit Owner</h3>
+
+@if (owner == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <form>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" @bind="owner.name" />
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <input type="text" class="form-control" id="description" @bind="owner.description" />
+        </div>
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" class="form-control" id="password" @bind="owner.password" />
+        </div>
+        <div class="form-group">
+            <label for="phone_num">Phone Number:</label>
+            <input type="text" class="form-control" id="phone_num" @bind="owner.phone_num" />
+        </div>
+        
+        <!-- Add other fields as needed -->
+
+        <button type="button" class="btn btn-primary" @onclick="UpdateOwner">Update</button>
+    </form>
+}
+
+@code {
+    [Parameter]
+    public int ownerId { get; set; }
+
+    private Owner owner;
+
+    protected override async Task OnInitializedAsync()
+    {
+        owner = await OwnerApiService.GetOwnerById(ownerId);
+    }
+
+    private async Task UpdateOwner()
+    {
+        await OwnerApiService.UpdateOwner(ownerId, owner);
+        NavigationManager.NavigateTo("/owners"); // Navigate back to the owner list page after updating
+    }
+}

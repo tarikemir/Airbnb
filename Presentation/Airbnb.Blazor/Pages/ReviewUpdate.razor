@@ -1,0 +1,50 @@
+﻿<!-- ReviewUpdate.razor -->
+@page "/reviews/update/{id:int}"
+@using Airbnb.Domain.Entities
+@using Airbnb.Blazor.Interfaces
+@inject IReviewApiService ReviewApiService
+@inject NavigationManager NavigationManager
+
+<h3>Edit Review</h3>
+
+@if (review == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <form>
+        <div class="form-group">
+            <label for="reservationId">Reservation ID:</label>
+            <input type="text" class="form-control" id="reservationId" @bind="review.reservation_id" />
+        </div>
+        <div class="form-group">
+            <label for="rating">Rating:</label>
+            <input type="text" class="form-control" id="rating" @bind="review.rating" />
+        </div>
+        <div class="form-group">
+            <label for="comment">Comment:</label>
+            <input type="text" class="form-control" id="comment" @bind="review.comment" />
+        </div>
+
+        <button type="button" class="btn btn-primary" @onclick="UpdateReview">Update</button>
+    </form>
+}
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private Review review;
+
+    protected override async Task OnInitializedAsync()
+    {
+        review = await ReviewApiService.GetReviewById(id);
+    }
+
+    private async Task UpdateReview()
+    {
+        await ReviewApiService.UpdateReview(review);
+        NavigationManager.NavigateTo("/reviews"); // Navigate back to the review list page after updating
+    }
+}

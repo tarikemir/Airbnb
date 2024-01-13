@@ -1,0 +1,71 @@
+﻿<!-- OwnerList.razor -->
+@page "/owners"
+@using Airbnb.Blazor.Interfaces;
+@inject IOwnerApiService OwnerApiService
+@using Airbnb.BlazorApp.Interfaces;
+@using Airbnb.BlazorApp.Services;
+@using Airbnb.Domain.Entities;
+@inject NavigationManager NavigationManager
+
+<h3>Owner List</h3>
+
+<p>Total Owners: @ownersCount</p>
+
+<ul>
+    @if (owners != null)
+    {
+        @foreach (var owner in owners)
+        {
+            <li>
+                <strong>ID:</strong> @owner.id <br />
+                <strong>Password:</strong> @owner.password <br />
+                <strong>Name:</strong> @owner.name <br />
+                <strong>Email Verified At:</strong> @owner.email_verified_at <br />
+                <strong>Created At:</strong> @owner.created_at <br />
+                <strong>Remember Token:</strong> @owner.remember_token <br />
+                <strong>Phone Number:</strong> @owner.phone_num <br />
+                <strong>Description:</strong> @owner.description <br />
+                <strong>Email:</strong> @owner.email <br />
+                <strong>Updated At:</strong> @owner.updated_at <br />
+
+                <button class="btn btn-sm btn-primary" @onclick="() => EditOwner(owner)">Edit</button>
+                <button class="btn btn-sm btn-danger" @onclick="() => DeleteOwner(owner.id)">Delete</button>
+            </li>
+        }
+    }
+</ul>
+
+<button class="btn btn-success" @onclick="CreateOwner">Create Owner</button>
+
+@code {
+    private List<Owner> owners;
+    private int ownersCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        owners = await OwnerApiService.GetOwners();
+        ownersCount = await OwnerApiService.GetOwnersCount();
+    }
+
+    private async Task EditOwner(Owner owner)
+    {
+        NavigationManager.NavigateTo($"/owners/update/{owner.id}");
+    }
+
+    private async Task DeleteOwner(int ownerId)
+    {
+        await OwnerApiService.DeleteOwner(ownerId);
+        await RefreshOwnerList();
+    }
+
+    private async Task CreateOwner()
+    {
+        NavigationManager.NavigateTo("/owners/create");
+    }
+
+    private async Task RefreshOwnerList()
+    {
+        owners = await OwnerApiService.GetOwners();
+        ownersCount = await OwnerApiService.GetOwnersCount();
+    }
+}

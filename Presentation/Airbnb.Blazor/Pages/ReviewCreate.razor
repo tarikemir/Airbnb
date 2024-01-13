@@ -1,0 +1,35 @@
+﻿<!-- ReviewCreate.razor -->
+@page "/reviews/create"
+@using Airbnb.Domain.Entities
+@using Airbnb.Blazor.Interfaces
+@inject IReviewApiService ReviewApiService
+@inject NavigationManager NavigationManager
+
+<h3>Create Review</h3>
+
+<form>
+    <div class="form-group">
+        <label for="reservationId">Reservation ID:</label>
+        <input type="text" class="form-control" id="reservationId" @bind="newReview.reservation_id" />
+    </div>
+    <div class="form-group">
+        <label for="rating">Rating:</label>
+        <input type="text" class="form-control" id="rating" @bind="newReview.rating" />
+    </div>
+    <div class="form-group">
+        <label for="comment">Comment:</label>
+        <input type="text" class="form-control" id="comment" @bind="newReview.comment" />
+    </div>
+
+    <button type="button" class="btn btn-primary" @onclick="CreateReview">Create</button>
+</form>
+
+@code {
+    private Review newReview = new Review();
+
+    private async Task CreateReview()
+    {
+        await ReviewApiService.CreateReview(newReview);
+        NavigationManager.NavigateTo("/reviews"); // Navigate back to the review list page after creating
+    }
+}

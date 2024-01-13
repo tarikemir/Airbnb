@@ -1,0 +1,82 @@
+﻿<!-- RoomList.razor -->
+@page "/rooms"
+@using Airbnb.Blazor.Interfaces
+@using Airbnb.BlazorApp.Interfaces
+@using Airbnb.BlazorApp.Services
+@using Airbnb.Domain.Entities
+@inject IRoomApiService RoomApiService
+@inject NavigationManager NavigationManager
+
+@code {
+    private List<Room> rooms;
+    private int roomsCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        rooms = await RoomApiService.GetRooms();
+        roomsCount = await RoomApiService.GetRoomsCount();
+    }
+
+    private async Task EditRoom(Room room)
+    {
+        NavigationManager.NavigateTo($"/rooms/update/{room.room_id}");
+    }
+
+    private async Task DeleteRoom(int roomId)
+    {
+        await RoomApiService.DeleteRoom(roomId);
+        await RefreshRoomList();
+    }
+
+    private async Task CreateRoom()
+    {
+        NavigationManager.NavigateTo("/rooms/create");
+    }
+
+    private async Task RefreshRoomList()
+    {
+        rooms = await RoomApiService.GetRooms();
+        roomsCount = await RoomApiService.GetRoomsCount();
+    }
+}
+
+<h3>Room List</h3>
+
+<p>Total Rooms: @roomsCount</p>
+
+<ul>
+    @if (rooms != null)
+    {
+        @foreach (var room in rooms)
+        {
+            <li>
+                <strong>Room ID:</strong> @room.room_id <br />
+                <strong>Created At:</strong> @room.created_at <br />
+                <strong>Updated At:</strong> @room.updated_at <br />
+                <strong>Price:</strong> @room.price <br />
+                <strong>Summary:</strong> @room.summary <br />
+                <strong>Address:</strong> @room.address <br />
+                <strong>Home Type:</strong> @room.home_type <br />
+                <strong>Room Type:</strong> @room.room_type <br />
+                <strong>Status:</strong> @room.status <br />
+                <strong>Total Bedrooms:</strong> @room.total_bedrooms <br />
+                <strong>Total Bathrooms:</strong> @room.total_bathrooms <br />
+                <strong>Admin ID:</strong> @room.admin_id <br />
+                <strong>Admin Verification:</strong> @room.admin_verification <br />
+                <strong>Longitude:</strong> @room.longitude <br />
+                <strong>Has Heating:</strong> @room.has_heating <br />
+                <strong>Latitude:</strong> @room.latitude <br />
+                <strong>Has TV:</strong> @room.has_tv <br />
+                <strong>Has Internet:</strong> @room.has_internet <br />
+                <strong>Has Air Conditioning:</strong> @room.has_air_con <br />
+                <strong>Owner ID:</strong> @room.owner_id <br />
+
+
+                <button class="btn btn-sm btn-primary" @onclick="() => EditRoom(room)">Edit</button>
+                <button class="btn btn-sm btn-danger" @onclick="() => DeleteRoom(room.room_id)">Delete</button>
+            </li>
+        }
+    }
+</ul>
+
+<button class="btn btn-success" @onclick="CreateRoom">Create Room</button>

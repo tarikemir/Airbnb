@@ -1,0 +1,62 @@
+﻿<!-- OwnerCreate.razor -->
+@page "/owners/create"
+@using Airbnb.Blazor.Interfaces;
+@using Airbnb.Domain.Entities
+@inject IOwnerApiService OwnerApiService
+@inject NavigationManager NavigationManager
+
+<h3>Create Owner</h3>
+
+<EditForm Model="@newOwner" OnValidSubmit="CreateOwner">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <InputText class="form-control" id="name" @bind-Value="newOwner.name" />
+        <ValidationMessage For="@(() => newOwner.name)" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <InputText type="password" class="form-control" id="password" @bind-Value="newOwner.password" />
+        <ValidationMessage For="@(() => newOwner.password)" />
+    </div>
+
+    <div class="form-group">
+        <label for="phone_num">Phone Number:</label>
+        <InputText class="form-control" id="phone_num" @bind-Value="newOwner.phone_num" />
+        <ValidationMessage For="@(() => newOwner.phone_num)" />
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <InputText class="form-control" id="description" @bind-Value="newOwner.description" />
+        <ValidationMessage For="@(() => newOwner.description)" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <InputText class="form-control" id="email" @bind-Value="newOwner.email" />
+        <ValidationMessage For="@(() => newOwner.email)" />
+    </div>
+    <div class="form-group">
+        <label for="remember_token">Remember Token:</label>
+        <InputText class="form-control" id="remember_token" @bind-Value="newOwner.remember_token" />
+        <ValidationMessage For="@(() => newOwner.remember_token)" />
+    </div>
+
+    <!-- Add other fields as needed -->
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</EditForm>
+
+@code {
+    private Owner newOwner = new Owner();
+
+    private async Task CreateOwner()
+    {
+        await OwnerApiService.CreateOwner(newOwner);
+        NavigationManager.NavigateTo("/owners"); // Navigate back to the owner list page after creating
+    }
+}

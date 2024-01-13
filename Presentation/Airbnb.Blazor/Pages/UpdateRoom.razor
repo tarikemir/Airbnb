@@ -1,0 +1,106 @@
+﻿<!-- UpdateRoom.razor -->
+@page "/rooms/update/{roomId:int}"
+@using Airbnb.Domain.Entities;
+@using Airbnb.Blazor.Interfaces;
+@inject IRoomApiService RoomApiService
+@inject NavigationManager NavigationManager
+
+<h3>Edit Room</h3>
+
+@if (room == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <form>
+        <div class="form-group">
+            <label for="price">Price:</label>
+            <input type="text" class="form-control" id="price" @bind="room.price" />
+        </div>
+        <div class="form-group">
+            <label for="summary">Summary:</label>
+            <input type="text" class="form-control" id="summary" @bind="room.summary" />
+        </div>
+        <div class="form-group">
+            <label for="address">Address:</label>
+            <input type="text" class="form-control" id="address" @bind="room.address" />
+        </div>
+        <div class="form-group">
+            <label for="home_type">Home Type:</label>
+            <input type="text" class="form-control" id="home_type" @bind="room.home_type" />
+        </div>
+        <div class="form-group">
+            <label for="room_type">Room Type:</label>
+            <input type="text" class="form-control" id="room_type" @bind="room.room_type" />
+        </div>
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <input type="text" class="form-control" id="status" @bind="room.status" />
+        </div>
+        <div class="form-group">
+            <label for="total_bedrooms">Total Bedrooms:</label>
+            <input type="text" class="form-control" id="total_bedrooms" @bind="room.total_bedrooms" />
+        </div>
+        <div class="form-group">
+            <label for="total_bathrooms">Total Bathrooms:</label>
+            <input type="text" class="form-control" id="total_bathrooms" @bind="room.total_bathrooms" />
+        </div>
+        <div class="form-group">
+            <label for="admin_id">Admin ID:</label>
+            <input type="text" class="form-control" id="admin_id" @bind="room.admin_id" />
+        </div>
+        <div class="form-group">
+            <label for="admin_verification">Admin Verification:</label>
+            <input type="text" class="form-control" id="admin_verification" @bind="room.admin_verification" />
+        </div>
+        <div class="form-group">
+            <label for="longitude">Longitude:</label>
+            <input type="text" class="form-control" id="longitude" @bind="room.longitude" />
+        </div>
+        <div class="form-group">
+            <label for="has_heating">Has Heating:</label>
+            <input type="text" class="form-control" id="has_heating" @bind="room.has_heating" />
+        </div>
+        <div class="form-group">
+            <label for="latitude">Latitude:</label>
+            <input type="text" class="form-control" id="latitude" @bind="room.latitude" />
+        </div>
+        <div class="form-group">
+            <label for="has_tv">Has TV:</label>
+            <input type="text" class="form-control" id="has_tv" @bind="room.has_tv" />
+        </div>
+        <div class="form-group">
+            <label for="has_internet">Has Internet:</label>
+            <input type="text" class="form-control" id="has_internet" @bind="room.has_internet" />
+        </div>
+        <div class="form-group">
+            <label for="has_air_con">Has Air Conditioning:</label>
+            <input type="text" class="form-control" id="has_air_con" @bind="room.has_air_con" />
+        </div>
+        <div class="form-group">
+            <label for="owner_id">Owner ID:</label>
+            <input type="text" class="form-control" id="owner_id" @bind="room.owner_id" />
+        </div>
+
+        <button type="button" class="btn btn-primary" @onclick="RoomUpdate">Update</button>
+    </form>
+}
+
+@code {
+    [Parameter]
+    public int roomId { get; set; }
+
+    private Room room;
+
+    protected override async Task OnInitializedAsync()
+    {
+        room = await RoomApiService.GetRoom(roomId);
+    }
+
+    private async Task RoomUpdate()
+    {
+        await RoomApiService.UpdateRoom(roomId, room);
+        NavigationManager.NavigateTo("/rooms"); // Navigate back to the room list page after updating
+    }
+}

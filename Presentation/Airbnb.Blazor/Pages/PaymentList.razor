@@ -1,0 +1,70 @@
+﻿<!-- PaymentList.razor -->
+@page "/payments"
+@using Airbnb.Blazor.Interfaces;
+@using Airbnb.BlazorApp.Interfaces;
+@using Airbnb.BlazorApp.Services;
+@using Airbnb.Domain.Entities;
+@inject IPaymentApiService PaymentApiService
+@inject NavigationManager NavigationManager
+
+@code {
+    private List<Payment> payments;
+    private int paymentsCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        payments = await PaymentApiService.GetPayments();
+        paymentsCount = await PaymentApiService.GetPaymentsCount();
+    }
+
+    private async Task EditPayment(Payment payment)
+    {
+        NavigationManager.NavigateTo($"/payments/update/{payment.payment_id}");
+    }
+
+    private async Task DeletePayment(int paymentId)
+    {
+        await PaymentApiService.DeletePayment(paymentId);
+        await RefreshPaymentList();
+    }
+
+    private async Task CreatePayment()
+    {
+        NavigationManager.NavigateTo("/payments/create");
+    }
+
+    private async Task RefreshPaymentList()
+    {
+        payments = await PaymentApiService.GetPayments();
+        paymentsCount = await PaymentApiService.GetPaymentsCount();
+    }
+}
+
+<h3>Payment List</h3>
+
+<p>Total Payments: @paymentsCount</p>
+
+<ul>
+    @if (payments != null)
+    {
+        @foreach (var payment in payments)
+        {
+            <li>
+                <strong>Payment ID:</strong> @payment.payment_id <br />
+                <strong>Reservation ID:</strong> @payment.reservation_id <br />
+                <strong>Status:</strong> @payment.status <br />
+                <strong>Credit Card Number:</strong> @payment.credit_card_number <br />
+                <strong>Credit Card CCV:</strong> @payment.credit_card_CCV <br />
+                <strong>Card Expiration Date:</strong> @payment.card_expiration_date <br />
+                <strong>Name:</strong> @payment.name <br />
+                <strong>Surname:</strong> @payment.surname <br />
+                <strong>Billing Address:</strong> @payment.billing_address <br />
+
+                <button class="btn btn-sm btn-primary" @onclick="() => EditPayment(payment)">Edit</button>
+                <button class="btn btn-sm btn-danger" @onclick="() => DeletePayment(payment.payment_id)">Delete</button>
+            </li>
+        }
+    }
+</ul>
+
+<button class="btn btn-success" @onclick="CreatePayment">Create Payment</button>

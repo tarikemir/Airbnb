@@ -1,0 +1,71 @@
+﻿<!-- AdminCreate.razor -->
+@page "/admins/create"
+@using Airbnb.BlazorApp.Interfaces;
+@using Airbnb.BlazorApp.Services;
+@using Airbnb.Domain.Entities
+@using Microsoft.AspNetCore.Components;
+@inject IAdminApiService AdminApiService
+@inject NavigationManager NavigationManager
+
+<h3>Create Admin</h3>
+
+<EditForm Model="@newAdmin" OnValidSubmit="CreateAdmin">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <InputText class="form-control" id="name" @bind-Value="newAdmin.name" />
+        <ValidationMessage For="@(() => newAdmin.name)" />
+    </div>
+
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <InputText type="password" class="form-control" id="password" @bind-Value="newAdmin.password" />
+        <ValidationMessage For="@(() => newAdmin.password)" />
+    </div>
+
+    <div class="form-group">
+        <label for="owner_id">Owner ID:</label>
+        <InputNumber class="form-control" id="owner_id" @bind-Value="newAdmin.owner_id" />
+        <ValidationMessage For="@(() => newAdmin.owner_id)" />
+    </div>
+
+    <div class="form-group">
+        <label for="phone_num">Phone Number:</label>
+        <InputText class="form-control" id="phone_num" @bind-Value="newAdmin.phone_num" />
+        <ValidationMessage For="@(() => newAdmin.phone_num)" />
+    </div>
+
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <InputText class="form-control" id="description" @bind-Value="newAdmin.description" />
+        <ValidationMessage For="@(() => newAdmin.description)" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <InputText class="form-control" id="email" @bind-Value="newAdmin.email" />
+        <ValidationMessage For="@(() => newAdmin.email)" />
+    </div>
+    <div class="form-group">
+        <label for="remember_token">Remember Token:</label>
+        <InputText class="form-control" id="remember_token" @bind-Value="newAdmin.remember_token" />
+        <ValidationMessage For="@(() => newAdmin.remember_token)" />
+    </div>
+
+    <!-- Add other fields as needed -->
+
+    <button type="submit" class="btn btn-primary">Create</button>
+</EditForm>
+
+
+@code {
+    private Admin newAdmin = new Admin();
+
+    private async Task CreateAdmin()
+    {
+        await AdminApiService.CreateAdmin(newAdmin);
+        NavigationManager.NavigateTo("/admins"); // Navigate back to the admin list page after creating
+    }
+}

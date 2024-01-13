@@ -1,0 +1,90 @@
+﻿<!-- CreateRoom.razor -->
+@page "/rooms/create"
+@using Airbnb.Domain.Entities;
+@using Airbnb.Blazor.Interfaces;
+@inject IRoomApiService RoomApiService
+@inject NavigationManager NavigationManager
+
+<h3>Create Room</h3>
+
+<form>
+    <div class="form-group">
+        <label for="price">Price:</label>
+        <input type="number" class="form-control" id="price" @bind="newRoom.price" />
+    </div>
+    <div class="form-group">
+        <label for="summary">Summary:</label>
+        <input type="text" class="form-control" id="summary" @bind="newRoom.summary" />
+    </div>
+    <div class="form-group">
+        <label for="address">Address:</label>
+        <input type="text" class="form-control" id="address" @bind="newRoom.address" />
+    </div>
+    <div class="form-group">
+        <label for="home_type">Home Type:</label>
+        <input type="text" class="form-control" id="home_type" @bind="newRoom.home_type" />
+    </div>
+    <div class="form-group">
+        <label for="room_type">Room Type:</label>
+        <input type="text" class="form-control" id="room_type" @bind="newRoom.room_type" />
+    </div>
+    <div class="form-group">
+        <label for="status">Status:</label>
+        <input type="checkbox" id="status" @bind="newRoom.status" />
+    </div>
+    <div class="form-group">
+        <label for="total_bedrooms">Total Bedrooms:</label>
+        <input type="number" class="form-control" id="total_bedrooms" @bind="newRoom.total_bedrooms" />
+    </div>
+    <div class="form-group">
+        <label for="total_bathrooms">Total Bathrooms:</label>
+        <input type="number" class="form-control" id="total_bathrooms" @bind="newRoom.total_bathrooms" />
+    </div>
+    <div class="form-group">
+        <label for="admin_verification">Admin Verification:</label>
+        <input type="checkbox" id="admin_verification" @bind="newRoom.admin_verification" />
+    </div>
+    <div class="form-group">
+        <label for="longitude">Longitude:</label>
+        <input type="number" class="form-control" id="longitude" @bind="newRoom.longitude" />
+    </div>
+    <div class="form-group">
+        <label for="has_heating">Has Heating:</label>
+        <input type="checkbox" id="has_heating" @bind="newRoom.has_heating" />
+    </div>
+    <div class="form-group">
+        <label for="latitude">Latitude:</label>
+        <input type="number" class="form-control" id="latitude" @bind="newRoom.latitude" />
+    </div>
+    <div class="form-group">
+        <label for="has_tv">Has TV:</label>
+        <input type="checkbox" id="has_tv" @bind="newRoom.has_tv" />
+    </div>
+    <div class="form-group">
+        <label for="has_internet">Has Internet:</label>
+        <input type="checkbox" id="has_internet" @bind="newRoom.has_internet" />
+    </div>
+    <div class="form-group">
+        <label for="has_air_con">Has Air Conditioning:</label>
+        <input type="checkbox" id="has_air_con" @bind="newRoom.has_air_con" />
+    </div>
+    <div class="form-group">
+        <label for="owner_id">Owner ID:</label>
+        <input type="number" class="form-control" id="owner_id" @bind="newRoom.owner_id" />
+    </div>
+    <!-- Add other fields as needed -->
+
+    <button type="button" class="btn btn-primary" @onclick="RoomCreate">Create</button>
+</form>
+
+
+
+@code {
+    private Room newRoom = new Room();
+
+    private async Task RoomCreate()
+    {
+        await RoomApiService.CreateRoom(newRoom);
+        NavigationManager.NavigateTo("/rooms"); // Navigate back to the room list page after creating
+    }
+}

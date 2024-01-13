@@ -1,0 +1,70 @@
+﻿<!-- PaymentUpdate.razor -->
+@page "/payments/update/{paymentId:int}"
+@using Airbnb.Blazor.Interfaces;
+@using Airbnb.Domain.Entities
+@inject IPaymentApiService PaymentApiService
+@inject NavigationManager NavigationManager
+
+<h3>Edit Payment</h3>
+
+@if (payment == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <form>
+        <div class="form-group">
+            <label for="reservation_id">Reservation ID:</label>
+            <input type="text" class="form-control" id="reservation_id" @bind="payment.reservation_id" />
+        </div>
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <input type="checkbox" id="status" @bind="payment.status" />
+        </div>
+        <div class="form-group">
+            <label for="credit_card_number">Credit Card Number:</label>
+            <input type="text" class="form-control" id="credit_card_number" @bind="payment.credit_card_number" />
+        </div>
+        <div class="form-group">
+            <label for="credit_card_CCV">Credit Card CCV:</label>
+            <input type="text" class="form-control" id="credit_card_CCV" @bind="payment.credit_card_CCV" />
+        </div>
+        <div class="form-group">
+            <label for="card_expiration_date">Card Expiration Date:</label>
+            <input type="date" class="form-control" id="card_expiration_date" @bind="payment.card_expiration_date" />
+        </div>
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" class="form-control" id="name" @bind="payment.name" />
+        </div>
+        <div class="form-group">
+            <label for="surname">Surname:</label>
+            <input type="text" class="form-control" id="surname" @bind="payment.surname" />
+        </div>
+        <div class="form-group">
+            <label for="billing_address">Billing Address:</label>
+            <input type="text" class="form-control" id="billing_address" @bind="payment.billing_address" />
+        </div>
+
+        <button type="button" class="btn btn-primary" @onclick="UpdatePayment">Update</button>
+    </form>
+}
+
+@code {
+    [Parameter]
+    public int paymentId { get; set; }
+
+    private Payment payment;
+
+    protected override async Task OnInitializedAsync()
+    {
+        payment = await PaymentApiService.GetPaymentById(paymentId);
+    }
+
+    private async Task UpdatePayment()
+    {
+        await PaymentApiService.UpdatePayment(paymentId, payment);
+        NavigationManager.NavigateTo("/payments"); // Navigate back to the payment list page after updating
+    }
+}

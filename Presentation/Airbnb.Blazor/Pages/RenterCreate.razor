@@ -1,0 +1,52 @@
+﻿<!-- RenterCreate.razor -->
+@page "/renters/create"
+@using Airbnb.Domain.Entities;
+@using Airbnb.Blazor.Interfaces;
+@using Microsoft.AspNetCore.Components;
+@inject IRenterApiService RenterApiService
+@inject NavigationManager NavigationManager
+
+<h3>Create Renter</h3>
+
+<form>
+    <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="text" class="form-control" id="email" @bind="newRenter.email" />
+    </div>
+    <div class="form-group">
+        <label for="password">Password:</label>
+        <input type="password" class="form-control" id="password" @bind="newRenter.password" />
+    </div>
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" id="name" @bind="newRenter.name" />
+    </div>
+    <div class="form-group">
+        <label for="phone_number">Phone Number:</label>
+        <input type="text" class="form-control" id="phone_number" @bind="newRenter.phone_number" />
+    </div>
+    <div class="form-group">
+        <label for="description">Description:</label>
+        <input type="text" class="form-control" id="description" @bind="newRenter.description" />
+    </div>
+    <div class="form-group">
+        <label for="email_verified_at">email verified at:</label>
+        <input type="text" class="form-control" id="email_verified_at" @bind="newRenter.email_verified_at" />
+    </div>
+    <div class="form-group">
+        <label for="remember_token">Remember Token:</label>
+        <input type="text" class="form-control" id="remember_token" @bind="newRenter.remember_token" />
+    </div>
+
+    <button type="button" class="btn btn-primary" @onclick="CreateRenter">Create</button>
+</form>
+
+@code {
+    private Renter newRenter = new Renter();
+
+    private async Task CreateRenter()
+    {
+        await RenterApiService.CreateRenter(newRenter);
+        NavigationManager.NavigateTo("/renters"); // Navigate back to the renter list page after creating
+    }
+}

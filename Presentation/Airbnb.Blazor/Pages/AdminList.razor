@@ -1,0 +1,75 @@
+﻿<!-- AdminList.razor -->
+@page "/admins"
+@using Airbnb.BlazorApp.Interfaces;
+@using Airbnb.BlazorApp.Services;
+@using Airbnb.Domain.Entities;
+@inject IAdminApiService AdminApiService
+@inject NavigationManager NavigationManager
+
+
+@code {
+    private List<Admin> admins;
+    private int adminsCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        admins = await AdminApiService.GetAdmins();
+        adminsCount = await AdminApiService.GetAdminsCount();
+    }
+
+    private async Task EditAdmin(Admin admin)
+    {
+        NavigationManager.NavigateTo($"/admins/update/{admin.admin_id}");
+    }
+
+    private async Task DeleteAdmin(int adminId)
+    {
+        await AdminApiService.DeleteAdmin(adminId);
+        admins = await AdminApiService.GetAdmins();
+        adminsCount = await AdminApiService.GetAdminsCount();
+    }
+
+    private async Task CreateAdmin()
+    {
+        NavigationManager.NavigateTo("/admins/create");
+    }
+
+
+}
+
+
+
+
+
+
+
+<h3>Admin List</h3>
+
+<p>Total Admins: @adminsCount</p>
+
+<ul>
+    @if (admins != null)
+    {
+        @foreach (var admin in admins)
+        {
+            <li>
+                <strong>Admin ID:</strong> @admin.admin_id <br />
+                <strong>Password:</strong> @admin.password <br />
+                <strong>Owner ID:</strong> @admin.owner_id <br />
+                <strong>Name:</strong> @admin.name <br />
+                <strong>Email Verified At:</strong> @admin.email_verified_at <br />
+                <strong>Created At:</strong> @admin.created_at <br />
+                <strong>Remember Token:</strong> @admin.remember_token <br />
+                <strong>Phone Number:</strong> @admin.phone_num <br />
+                <strong>Description:</strong> @admin.description <br />
+                <strong>Email:</strong> @admin.email <br />
+                <strong>Updated At:</strong> @admin.updated_at <br />
+
+                <button class="btn btn-sm btn-primary" @onclick="() => EditAdmin(admin)">Edit</button>
+                <button class="btn btn-sm btn-danger" @onclick="() => DeleteAdmin(admin.admin_id)">Delete</button>
+            </li>
+        }
+    }
+</ul>
+
+<button class="btn btn-success" @onclick="CreateAdmin">Create Admin</button>

@@ -1,0 +1,65 @@
+﻿<!-- ReviewList.razor -->
+@page "/reviews"
+@using Airbnb.Blazor.Interfaces
+@using Airbnb.BlazorApp.Interfaces
+@using Airbnb.BlazorApp.Services
+@using Airbnb.Domain.Entities
+@inject IReviewApiService ReviewApiService
+@inject NavigationManager NavigationManager
+
+@code {
+    private List<Review> reviews;
+    private int reviewsCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        reviews = await ReviewApiService.GetReviews();
+        reviewsCount = await ReviewApiService.GetReviewsCount();
+    }
+
+    private async Task EditReview(Review review)
+    {
+        NavigationManager.NavigateTo($"/reviews/update/{review.id}");
+    }
+
+    private async Task DeleteReview(int reviewId)
+    {
+        await ReviewApiService.DeleteReview(reviewId);
+        await RefreshReviewList();
+    }
+
+    private async Task CreateReview()
+    {
+        NavigationManager.NavigateTo("/reviews/create");
+    }
+
+    private async Task RefreshReviewList()
+    {
+        reviews = await ReviewApiService.GetReviews();
+        reviewsCount = await ReviewApiService.GetReviewsCount();
+    }
+}
+
+<h3>Review List</h3>
+
+<p>Total Reviews: @reviewsCount</p>
+
+<ul>
+    @if (reviews != null)
+    {
+        @foreach (var review in reviews)
+        {
+            <li>
+                <strong>Reservation ID:</strong> @review.reservation_id <br />
+                <strong>Review ID:</strong> @review.id <br />
+                <strong>Rating:</strong> @review.rating <br />
+                <strong>Comment:</strong> @review.comment <br />
+
+                <button class="btn btn-sm btn-primary" @onclick="() => EditReview(review)">Edit</button>
+                <button class="btn btn-sm btn-danger" @onclick="() => DeleteReview(review.id)">Delete</button>
+            </li>
+        }
+    }
+</ul>
+
+<button class="btn btn-success" @onclick="CreateReview">Create Review</button>

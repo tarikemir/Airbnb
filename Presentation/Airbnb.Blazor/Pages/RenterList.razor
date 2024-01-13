@@ -1,0 +1,70 @@
+﻿<!-- RenterList.razor -->
+@page "/renters"
+@using Airbnb.Blazor.Interfaces;
+@using Airbnb.BlazorApp.Interfaces;
+@using Airbnb.BlazorApp.Services;
+@using Airbnb.Domain.Entities;
+@inject IRenterApiService RenterApiService
+@inject NavigationManager NavigationManager
+
+@code {
+    private List<Renter> renters;
+    private int rentersCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        renters = await RenterApiService.GetRenters();
+        rentersCount = await RenterApiService.GetRentersCount();
+    }
+
+    private async Task EditRenter(Renter renter)
+    {
+        NavigationManager.NavigateTo($"/renters/update/{renter.renter_id}");
+    }
+
+    private async Task DeleteRenter(int renterId)
+    {
+        await RenterApiService.DeleteRenter(renterId);
+        await RefreshRenterList();
+    }
+
+    private async Task CreateRenter()
+    {
+        NavigationManager.NavigateTo("/renters/create");
+    }
+
+    private async Task RefreshRenterList()
+    {
+        renters = await RenterApiService.GetRenters();
+        rentersCount = await RenterApiService.GetRentersCount();
+    }
+}
+
+<h3>Renter List</h3>
+
+<p>Total Renters: @rentersCount</p>
+
+<ul>
+    @if (renters != null)
+    {
+        @foreach (var renter in renters)
+        {
+            <li>
+                <strong>Renter ID:</strong> @renter.renter_id <br />
+                <strong>Email:</strong> @renter.email <br />
+                <strong>Password:</strong> @renter.password <br />
+                <strong>Remember Token:</strong> @renter.remember_token <br />
+                <strong>Name:</strong> @renter.name <br />
+                <strong>Created At:</strong> @renter.created_at <br />
+                <strong>Phone Number:</strong> @renter.phone_number <br />
+                <strong>Description:</strong> @renter.description <br />
+                <strong>Email Verified At:</strong> @renter.email_verified_at <br />
+
+                <button class="btn btn-sm btn-primary" @onclick="() => EditRenter(renter)">Edit</button>
+                <button class="btn btn-sm btn-danger" @onclick="() => DeleteRenter(renter.renter_id)">Delete</button>
+            </li>
+        }
+    }
+</ul>
+
+<button class="btn btn-success" @onclick="CreateRenter">Create Renter</button>

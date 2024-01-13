@@ -1,0 +1,65 @@
+﻿<!-- AdminList.razor -->
+@page "/admins"
+@using Airbnb.BlazorApp.Interfaces;
+@using Airbnb.BlazorApp.Services;
+@using Airbnb.Domain.Entities;
+@inject IAdminApiService AdminApiService
+
+
+@code {
+    private List<Admin> admins;
+    private int adminsCount;
+
+    protected override async Task OnInitializedAsync()
+    {
+        admins = await AdminApiService.GetAdmins();
+        adminsCount = await AdminApiService.GetAdminsCount();
+    }
+
+    private async Task EditAdmin(Admin admin)
+    {
+        // Navigate to the admin edit page or show a modal for editing
+        // You can implement this based on your navigation strategy
+    }
+
+    private async Task DeleteAdmin(int adminId)
+    {
+        await AdminApiService.DeleteAdmin(adminId);
+        admins = await AdminApiService.GetAdmins();
+        adminsCount = await AdminApiService.GetAdminsCount();
+    }
+
+    private async Task CreateAdmin()
+    {
+        // Navigate to the admin create page or show a modal for creating
+        // You can implement this based on your navigation strategy
+    }
+
+}
+
+
+
+
+
+
+
+<h3>Admin List</h3>
+
+<p>Total Admins: @adminsCount</p>
+
+<ul>
+    @if (admins != null)
+    {
+        @foreach (var admin in admins)
+        {
+            <li>
+                @admin.name
+                @admin.description
+                <button class="btn btn-sm btn-primary" @onclick="() => EditAdmin(admin)">Edit</button>
+                <button class="btn btn-sm btn-danger" @onclick="() => DeleteAdmin(admin.admin_id)">Delete</button>
+            </li>
+        }
+    }
+</ul>
+
+<button class="btn btn-success" @onclick="CreateAdmin">Create Admin</button>
