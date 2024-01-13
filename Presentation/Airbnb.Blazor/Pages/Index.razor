@@ -1,7 +1,20 @@
-﻿@page "/"
+﻿<!-- Index.cshtml (or any other Razor page) -->
+@page "/"
+<h1>Welcome to the Airbnb App</h1>
 
-<PageTitle>Index</PageTitle>
+<!-- Navigation buttons -->
+<div>
+    <button onclick="navigateToPage('/admins')" class="btn btn-primary">Admins</button>
+    <button onclick="navigateToPage('/owners')" class="btn btn-primary">Owners</button>
+    <button onclick="navigateToPage('/payments')" class="btn btn-primary">Payments</button>
+    <button onclick="navigateToPage('/renters')" class="btn btn-primary">Renters</button>
+    <button onclick="navigateToPage('/reservations')" class="btn btn-primary">Reservations</button>
+    <button onclick="navigateToPage('/reviews')" class="btn btn-primary">Reviews</button>
+    <button onclick="navigateToPage('/rooms')" class="btn btn-primary">Rooms</button>
+</div>
 
-<h1>Welcome to Airbnb app!</h1>
-
-}
+<script>
+    function navigateToPage(page) {
+        window.location.href = page;
+    }
+</script>
